@@ -10,7 +10,7 @@ BUILD_CLIB_DIR =        $(BUILD_DIR)/clib
 PLAT ?= linux
 SHARED := -fPIC --shared
 CFLAGS = -g -O2 -Wall -I$(BUILD_INCLUDE_DIR) 
-LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -pthread -lm -ldl -lrt
+LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -lpthread -lm -ldl -lrt
 DEFS = -DHAS_SOCKLEN_T=1 -DLUA_COMPAT_APIINTCASTS=1 
 
 all : submodule build sproto libenet.so
@@ -34,7 +34,7 @@ libenet.so:3rd/enet/callbacks.c 3rd/enet/compress.c 3rd/enet/host.c \
 submodule :
 	git submodule update --init
 	
-LUACLIB = lfs enet
+LUACLIB = log enet lfs
 
 all : \
   $(foreach v, $(LUACLIB), $(BUILD_LUACLIB_DIR)/$(v).so) 
@@ -44,6 +44,9 @@ $(BUILD_LUACLIB_DIR) :
 	
 $(BUILD_CLIB_DIR) :
 	mkdir $(BUILD_CLIB_DIR)
+
+$(BUILD_LUACLIB_DIR)/log.so : lualib-src/lua-log.c | $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@ $(LDFLAGS)
 
 $(BUILD_LUACLIB_DIR)/enet.so : lualib-src/lua-enet.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(DEFS) $(CFLAGS) $(SHARED) $^ -o $@ $(LDFLAGS) -lenet
