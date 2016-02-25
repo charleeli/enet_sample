@@ -1,5 +1,5 @@
 package.cpath = "./build/luaclib/?.so"
-package.path = package.path..";./lualib/?.lua"
+package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
 
 local log = require "log"
 log.init{log_basename = "simple_client",service_name = "simple server"}
@@ -30,5 +30,8 @@ end
 server:disconnect()
 host:flush()
 
+local aux = require "aux"
+aux.test_log()
 log.info("done")
+log.exit()
 

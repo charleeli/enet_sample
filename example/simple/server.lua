@@ -2,7 +2,8 @@ package.cpath = package.cpath..";./build/luaclib/?.so"
 package.path = package.path..";./lualib/?.lua"
 
 local log = require "log"
-log.init{log_basename = "simple_server",service_name = "simple server"}
+log.init{log_basename = "simple_server",service_name = "simple server" }
+
 local enet = require "enet"
 
 local host = enet.host_create"localhost:5678"
@@ -21,3 +22,5 @@ while true do
 		end
 	end
 end
+
+log.exit()

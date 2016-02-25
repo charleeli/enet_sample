@@ -9,6 +9,10 @@ function log.init(conf)
 	log.service_name = conf.service_name
 end
 
+function log.exit()
+	logger.exit()
+end
+
 function log.debug(fmt, ...)
 	local msg = string.format(fmt, ...)
 	local info = debug.getinfo(2)
