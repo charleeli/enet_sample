@@ -1,5 +1,7 @@
 package.cpath = "./build/luaclib/?.so"
+package.path = package.path..";./lualib/?.lua"
 
+local log = require "log"
 local enet = require "enet"
 
 local host = enet.host_create()
@@ -10,14 +12,14 @@ while count < 100 do
 	local event = host:service(100)
 	if event then
 		if event.type == "receive" then
-			print("Got message: ",  event.data)
+			log.info("Got message: ",  event.data)
 		else
-			print("Got event", event.type)
+			log.info("Got event", event.type)
 		end
 	end
 
 	if count == 8 then
-		print "sending message"
+		log.info "sending message"
 		server:send("hello world")
 	end
 
@@ -27,5 +29,5 @@ end
 server:disconnect()
 host:flush()
 
-print"done"
+log.info"done"
 
