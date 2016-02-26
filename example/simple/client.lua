@@ -1,6 +1,7 @@
 package.cpath = "./build/luaclib/?.so"
 package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua"
 
+local pretty = require 'pl.pretty'
 local enet = require "enet"
 local log = require "log"
 log.init{log_basename = "simple_client",service_name = "simple server" }
@@ -33,6 +34,12 @@ while count < 100 do
 	if event then
 		if event.type == "receive" then
 			log.info("Got message: %s",  event.data)
+
+			local type, session, response = sproto_server:dispatch(event.data)
+
+			print('----',type, session)
+			pretty.dump(response)
+			print('----')
 		else
 			log.info("Got event %s", event.type)
 		end
