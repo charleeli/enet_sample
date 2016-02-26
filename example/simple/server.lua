@@ -1,11 +1,11 @@
 package.cpath = package.cpath..";./build/luaclib/?.so"
 package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua"
 
+local pretty = require 'pl.pretty'
 local enet = require "enet"
 local log = require "log"
 log.init{log_basename = "simple_server",service_name = "simple server" }
 
-local print_r = require "print_r"
 local SprotoLoader = require "sprotoloader"
 local SprotoEnv = require "sproto_env"
 SprotoEnv.init('./build/sproto')
@@ -21,7 +21,7 @@ while true do
 		if event.type == "receive" then
 			local type, name, request, response = c2s_host:dispatch(event.data)
 			print(type, name, request, response)
-			print_r (request)
+			pretty.dump(request)
 
 			log.info("Got message: %s , %s",  event.data, event.peer)
 			event.peer:send("howdy back at ya")

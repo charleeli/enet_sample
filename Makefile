@@ -7,7 +7,7 @@ BUILD_INCLUDE_DIR =     $(BUILD_DIR)/include
 BUILD_LUALIB_DIR =      $(BUILD_DIR)/lualib
 BUILD_LUACLIB_DIR =     $(BUILD_DIR)/luaclib
 BUILD_CLIB_DIR =        $(BUILD_DIR)/clib
-BUILD_STATIC_LIB_DIR =  $(BUILD_DIR)/static_lib
+BUILD_STATIC_LIB_DIR =  $(BUILD_DIR)/staticlib
 BUILD_SPROTO_DIR =      $(BUILD_DIR)/sproto
 
 PLAT ?= linux
@@ -40,7 +40,7 @@ lua53:
 
 spb:
 	cd 3rd/sproto/ && $(MAKE)
-	cp 3rd/sproto/print_r.lua 3rd/sproto/sproto.lua 3rd/sproto/sprotoparser.lua $(BUILD_LUALIB_DIR)/
+	cp 3rd/sproto/sproto.lua 3rd/sproto/sprotoparser.lua $(BUILD_LUALIB_DIR)/
 	cp 3rd/sproto/sproto.so $(BUILD_LUACLIB_DIR)/
 	
 libenet.so:3rd/enet/callbacks.c 3rd/enet/compress.c 3rd/enet/host.c \
