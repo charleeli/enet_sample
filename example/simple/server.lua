@@ -13,6 +13,7 @@ SprotoEnv.init('./build/sproto')
 
 local c2s_sp = SprotoLoader.load(SprotoEnv.PID_C2S)
 local c2s_host = c2s_sp:host(SprotoEnv.BASE_PACKAGE)
+local s2c_client = c2s_host:attach(SprotoLoader.load(SprotoEnv.PID_S2C))
 
 local request_handlers = {}
 
@@ -54,7 +55,9 @@ while true do
 			event.peer:send(response(r))
 		elseif event.type == "connect" then
 			log.info("Connect:%s", event.peer)
+
 			--host:broadcast("new client connected")
+			host:broadcast(s2c_client("broadcast",{msg="new client connected"},0))
 		else
 			log.info("Got event %s,%s", event.type, event.peer)
 		end

@@ -10,9 +10,9 @@ local SprotoLoader = require "sprotoloader"
 local SprotoEnv = require "sproto_env"
 SprotoEnv.init('./build/sproto')
 
-local sp_s2c = SprotoLoader.load(SprotoEnv.PID_S2C)
-local sproto_server = sp_s2c:host(SprotoEnv.BASE_PACKAGE)
-local sproto_client = sproto_server:attach(SprotoLoader.load(SprotoEnv.PID_C2S))
+local s2c_sp = SprotoLoader.load(SprotoEnv.PID_S2C)
+local s2c_host = s2c_sp:host(SprotoEnv.BASE_PACKAGE)
+local c2s_client = s2c_host:attach(SprotoLoader.load(SprotoEnv.PID_C2S))
 
 local host = enet.host_create()
 local server = host:connect("localhost:5678")
@@ -21,9 +21,9 @@ local session = 0
 
 local function send_request(name, args)
     session = session + 1
-    local v = sproto_client(name, args, session)
-    local size = #v + 4
-    local package = string.pack(">I2", size)..v..string.pack(">I4", session)
+    local v = c2s_client(name, args, session)
+    --local size = #v + 4
+    --local package = string.pack(">I2", size)..v..string.pack(">I4", session)
     server:send(v)
     --print_request(name, session,args)
 end
@@ -35,7 +35,7 @@ while count < 100 do
 		if event.type == "receive" then
 			log.info("Got message: %s",  event.data)
 
-			local type, session, response = sproto_server:dispatch(event.data)
+			local type, session, response = s2c_host:dispatch(event.data)
 
 			print('----',type, session)
 			pretty.dump(response)
