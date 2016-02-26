@@ -7,3 +7,6 @@
 [submodule "3rd/sproto"]
 	path = 3rd/sproto
 	url = https://github.com/cloudwu/sproto.git
+[submodule "3rd/sprotodump"]
+	path = 3rd/sprotodump
+	url = https://github.com/lvzixun/sprotodump.git
