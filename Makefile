@@ -39,12 +39,10 @@ lua53:
 	install -p -m 0644 3rd/lua/luaconf.h $(BUILD_INCLUDE_DIR)
 
 json:
-	cp 3rd/json-lua/JSON.lua $(BUILD_LUALIB_DIR)/
+	cp 3rd/json-lua/JSON.lua $(TOP)/$(BUILD_LUALIB_DIR)/
 
 spb:
-	cd 3rd/sproto/ && $(MAKE)
 	cp 3rd/sproto/sproto.lua 3rd/sproto/sprotoparser.lua $(BUILD_LUALIB_DIR)/
-	cp 3rd/sproto/sproto.so $(BUILD_LUACLIB_DIR)/
 	
 libenet.so:3rd/enet/callbacks.c 3rd/enet/compress.c 3rd/enet/host.c \
            3rd/enet/list.c 3rd/enet/packet.c 3rd/enet/peer.c \
@@ -55,7 +53,7 @@ libenet.so:3rd/enet/callbacks.c 3rd/enet/compress.c 3rd/enet/host.c \
 submodule :
 	git submodule update --init
 	
-LUACLIB = lpeg log enet lfs
+LUACLIB = sproto lpeg log enet lfs
 
 all : \
   $(foreach v, $(LUACLIB), $(BUILD_LUACLIB_DIR)/$(v).so)
@@ -68,6 +66,9 @@ $(BUILD_LUALIB_DIR) :
 
 $(BUILD_LUACLIB_DIR) :
 	mkdir $(BUILD_LUACLIB_DIR)
+
+$(BUILD_LUACLIB_DIR)/sproto.so : 3rd/sproto/sproto.c 3rd/sproto/lsproto.c | $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) -I3rd/sproto $^ -o $@ 
 
 $(BUILD_LUACLIB_DIR)/lpeg.so : 3rd/lpeg/lpcap.c 3rd/lpeg/lpcode.c \
     3rd/lpeg/lpprint.c 3rd/lpeg/lptree.c 3rd/lpeg/lpvm.c \
