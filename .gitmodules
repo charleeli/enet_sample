@@ -10,3 +10,6 @@
 [submodule "3rd/sprotodump"]
 	path = 3rd/sprotodump
 	url = https://github.com/lvzixun/sprotodump.git
+[submodule "3rd/json-lua"]
+	path = 3rd/json-lua
+	url = https://github.com/jiyinyiyong/json-lua.git

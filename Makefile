@@ -16,7 +16,7 @@ CFLAGS = -g -O2 -Wall -I$(BUILD_INCLUDE_DIR)
 LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -lpthread -lm -ldl -lrt
 DEFS = -DHAS_SOCKLEN_T=1 -DLUA_COMPAT_APIINTCASTS=1 
 
-all : submodule build lua53 spb libenet.so
+all : submodule build lua53 json spb libenet.so
 
 build:
 	-mkdir $(BUILD_DIR)
@@ -37,6 +37,9 @@ lua53:
 	install -p -m 0644 3rd/lua/lauxlib.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0644 3rd/lua/lualib.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0644 3rd/lua/luaconf.h $(BUILD_INCLUDE_DIR)
+
+json:
+	cp 3rd/json-lua/JSON.lua $(BUILD_LUALIB_DIR)/
 
 spb:
 	cd 3rd/sproto/ && $(MAKE)
