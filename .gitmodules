@@ -10,6 +10,12 @@
 [submodule "3rd/sprotodump"]
 	path = 3rd/sprotodump
 	url = https://github.com/lvzixun/sprotodump.git
-[submodule "3rd/json-lua"]
-	path = 3rd/json-lua
-	url = https://github.com/jiyinyiyong/json-lua.git
+[submodule "3rd/lua-cjson"]
+	path = 3rd/lua-cjson
+	url = https://github.com/mpx/lua-cjson.git
+[submodule "3rd/levent"]
+	path = 3rd/levent
+	url = https://github.com/xjdrew/levent.git
+[submodule "3rd/libev"]
+	path = 3rd/libev
+	url = https://github.com/enki/libev.git

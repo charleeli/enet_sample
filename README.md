@@ -1,5 +1,5 @@
 ## Basic requirements
-    [ubuntu 14.04.2 lts](http://www.ubuntu.com/download/desktop)
+[ubuntu kylin 14.04/16.04 lts](http://www.ubuntukylin.com/downloads/)
 
 ## Ubuntu setup
 ```

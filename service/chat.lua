@@ -1,12 +1,12 @@
 local log = require "log"
-local JSON = require("JSON")
+local json = require "cjson"
 
 function send_private_chat(args)
-    log.info("args = %s",JSON:encode_pretty(args))
+    log.info("args = %s",json.encode(args))
     return {errcode = 0}
 end
 
 function send_world_chat(args)
-    log.info("args = %s",JSON:encode(args))
+    log.info("args = %s",json.encode(args))
     return {errcode = 0}
 end

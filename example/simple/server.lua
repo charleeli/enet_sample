@@ -1,5 +1,5 @@
-package.cpath = package.cpath..";./build/luaclib/?.so"
-package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua"
+package.cpath = package.cpath..";./build/luaclib/?.so;./build/luaclib/levent/?.so"
+package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua;./build/lualib/?.lua"
 
 local lfs = require"lfs"
 local pretty = require 'pl.pretty'

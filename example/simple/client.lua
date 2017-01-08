@@ -1,4 +1,4 @@
-package.cpath = "./build/luaclib/?.so"
+package.cpath = "./build/luaclib/?.so;./build/luaclib/levent/?.so"
 package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua"
 
 local pretty = require 'pl.pretty'

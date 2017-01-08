@@ -16,14 +16,17 @@ CFLAGS = -g -O2 -Wall -I$(BUILD_INCLUDE_DIR)
 LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -lpthread -lm -ldl -lrt
 DEFS = -DHAS_SOCKLEN_T=1 -DLUA_COMPAT_APIINTCASTS=1 
 
-all : submodule build lua53 json spb libenet.so
+all : submodule build lua53 spb libenet.so libev.so http_parser.so
 
 build:
 	-mkdir $(BUILD_DIR)
 	-mkdir $(BUILD_BIN_DIR)
 	-mkdir $(BUILD_INCLUDE_DIR)
+	-mkdir $(BUILD_INCLUDE_DIR)/libev/
 	-mkdir $(BUILD_LUALIB_DIR)
+	-mkdir $(BUILD_LUALIB_DIR)/levent/
 	-mkdir $(BUILD_LUACLIB_DIR)
+	-mkdir $(BUILD_LUACLIB_DIR)/levent/
 	-mkdir $(BUILD_CLIB_DIR)
 	-mkdir $(BUILD_STATIC_LIB_DIR)
 	-mkdir $(BUILD_SPROTO_DIR)
@@ -38,9 +41,6 @@ lua53:
 	install -p -m 0644 3rd/lua/lualib.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0644 3rd/lua/luaconf.h $(BUILD_INCLUDE_DIR)
 
-json:
-	cp 3rd/json-lua/JSON.lua $(TOP)/$(BUILD_LUALIB_DIR)/
-
 spb:
 	cp 3rd/sproto/sproto.lua 3rd/sproto/sprotoparser.lua $(BUILD_LUALIB_DIR)/
 	
@@ -48,15 +48,26 @@ libenet.so:3rd/enet/callbacks.c 3rd/enet/compress.c 3rd/enet/host.c \
            3rd/enet/list.c 3rd/enet/packet.c 3rd/enet/peer.c \
            3rd/enet/protocol.c 3rd/enet/unix.c
 	cp -r 3rd/enet/include/enet/ $(BUILD_INCLUDE_DIR)/
-	$(CC) $(DEFS) $(CFLAGS) $(SHARED) $^ -o $(BUILD_CLIB_DIR)/libenet.so 
+	$(CC) $(DEFS) $(CFLAGS) $(SHARED) $^ -o $(BUILD_CLIB_DIR)/libenet.so
+
+libev.so :
+	cd 3rd/libev/ && ./configure --prefix=$(PWD)/3rd/libev/ && make && make install
+	cp 3rd/libev/lib/libev.a $(BUILD_CLIB_DIR)/
+	cp 3rd/libev/*.h 3rd/libev/*.c $(BUILD_INCLUDE_DIR)/libev
+
+http_parser.so : 3rd/levent/deps/http-parser/http_parser.c
+	cp 3rd/levent/deps/http-parser/http_parser.h $(BUILD_INCLUDE_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $(BUILD_CLIB_DIR)/libhttp_parser.so
 
 submodule :
 	git submodule update --init
 	
-LUACLIB = sproto lpeg log enet lfs
+LUACLIB = sproto lpeg log enet lfs cjson
+LEVENTLIB = levent bson mongo
 
 all : \
-  $(foreach v, $(LUACLIB), $(BUILD_LUACLIB_DIR)/$(v).so)
+  $(foreach v, $(LUACLIB), $(BUILD_LUACLIB_DIR)/$(v).so) \
+  $(foreach v, $(LEVENTLIB), $(BUILD_LUACLIB_DIR)/levent/$(v).so)
 
 $(BUILD_CLIB_DIR) :
 	mkdir $(BUILD_CLIB_DIR)
@@ -84,6 +95,22 @@ $(BUILD_LUACLIB_DIR)/enet.so : lualib-src/lua-enet.c | $(BUILD_LUACLIB_DIR)
 $(BUILD_LUACLIB_DIR)/lfs.so: 3rd/luafilesystem/src/lfs.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
 
+$(BUILD_LUACLIB_DIR)/cjson.so: 3rd/lua-cjson/lua_cjson.c 3rd/lua-cjson/fpconv.c \
+    3rd/lua-cjson/strbuf.c| $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+
+$(BUILD_LUACLIB_DIR)/levent/levent.so : 3rd/levent/src/lua-levent.c 3rd/levent/src/lua-errno.c \
+	3rd/levent/src/lua-ev.c 3rd/levent/src/lua-socket.c 3rd/levent/src/lua-http-parser.c \
+	3rd/levent/src/evwrap.c | $(BUILD_LUACLIB_DIR)/levent/
+	cp 3rd/levent/src/levent.h $(BUILD_INCLUDE_DIR)
+	$(CC) $(CFLAGS) -I$(BUILD_INCLUDE_DIR)/libev $(SHARED) $^ -o $@ $(LDFLAGS) -lhttp_parser
+
+$(BUILD_LUACLIB_DIR)/levent/bson.so : 3rd/levent/ext/mongo/lua-bson.c | $(BUILD_LUACLIB_DIR)/levent/
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+
+$(BUILD_LUACLIB_DIR)/levent/mongo.so : 3rd/levent/ext/mongo/lua-mongo.c | $(BUILD_LUACLIB_DIR)/levent/
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+
 all : schema
 
 schema:
@@ -101,3 +128,4 @@ schema:
 
 clean :
 	-rm -rf build
+	-rm -rf log
