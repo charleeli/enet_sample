@@ -16,7 +16,7 @@ CFLAGS = -g -O2 -Wall -I$(BUILD_INCLUDE_DIR)
 LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -lpthread -lm -ldl -lrt
 DEFS = -DHAS_SOCKLEN_T=1 -DLUA_COMPAT_APIINTCASTS=1 
 
-all : submodule build lua53 spb libenet.so libev.so http_parser.so
+all : submodule build lua53 Penlight levent spb libenet.so libev.so http_parser.so
 
 build:
 	-mkdir $(BUILD_DIR)
@@ -24,6 +24,7 @@ build:
 	-mkdir $(BUILD_INCLUDE_DIR)
 	-mkdir $(BUILD_INCLUDE_DIR)/libev/
 	-mkdir $(BUILD_LUALIB_DIR)
+	-mkdir $(BUILD_LUALIB_DIR)/pl/
 	-mkdir $(BUILD_LUALIB_DIR)/levent/
 	-mkdir $(BUILD_LUACLIB_DIR)
 	-mkdir $(BUILD_LUACLIB_DIR)/levent/
@@ -40,6 +41,12 @@ lua53:
 	install -p -m 0644 3rd/lua/lauxlib.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0644 3rd/lua/lualib.h $(BUILD_INCLUDE_DIR)
 	install -p -m 0644 3rd/lua/luaconf.h $(BUILD_INCLUDE_DIR)
+
+Penlight:
+	cp -r 3rd/Penlight/lua/pl/* $(BUILD_LUALIB_DIR)/pl/
+
+levent:
+	cp -r 3rd/levent/levent/* $(BUILD_LUALIB_DIR)/levent/
 
 spb:
 	cp 3rd/sproto/sproto.lua 3rd/sproto/sprotoparser.lua $(BUILD_LUALIB_DIR)/
@@ -62,7 +69,7 @@ http_parser.so : 3rd/levent/deps/http-parser/http_parser.c
 submodule :
 	git submodule update --init
 	
-LUACLIB = sproto lpeg log enet lfs cjson
+LUACLIB = sproto lpeg log enet lfs cjson ctime
 LEVENTLIB = levent bson mongo
 
 all : \
@@ -97,6 +104,9 @@ $(BUILD_LUACLIB_DIR)/lfs.so: 3rd/luafilesystem/src/lfs.c | $(BUILD_LUACLIB_DIR)
 
 $(BUILD_LUACLIB_DIR)/cjson.so: 3rd/lua-cjson/lua_cjson.c 3rd/lua-cjson/fpconv.c \
     3rd/lua-cjson/strbuf.c| $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+
+$(BUILD_LUACLIB_DIR)/ctime.so: lualib-src/lua-ctime.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
 
 $(BUILD_LUACLIB_DIR)/levent/levent.so : 3rd/levent/src/lua-levent.c 3rd/levent/src/lua-errno.c \

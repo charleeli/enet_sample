@@ -19,3 +19,6 @@
 [submodule "3rd/libev"]
 	path = 3rd/libev
 	url = https://github.com/enki/libev.git
+[submodule "3rd/Penlight"]
+	path = 3rd/Penlight
+	url = https://github.com/stevedonovan/Penlight.git
