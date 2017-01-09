@@ -3,25 +3,15 @@ package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
                 ..";./build/lualib/?.lua;./build/lualib/?.lua"
 
 local levent = require "levent.levent"
+local timer = require "timer"
 local log = require "log"
 log.init{log_basename = "test_timer",service_name = "test timer" }
 
-local TimerMgr = require 'timer_mgr'
-
-local timer_mgr = TimerMgr(1)
-
 local function main()
     log.info("main...")
-	timer_mgr:add_timer(
-        3.5,
-        function()
-			print("save db")
-        end
-    )
-
-	timer_mgr:start()
+	timer.setTimeout(function() print("setTimeout 2000 ms" ) end, 2000)
+    timer.setInterval(function() print("setInterval 3000 ms" ) end, 3000)
 end
 
 levent.start(main)
-
 log.exit()
