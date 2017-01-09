@@ -18,4 +18,6 @@ make
 cd srpc
 ./build/bin/lua example/simple/server.lua
 ./build/bin/lua example/simple/client.lua
+
+./build/bin/lua test/test_timer.lua
 ```
