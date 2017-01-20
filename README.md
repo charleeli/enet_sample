@@ -1,9 +1,11 @@
 ## Basic requirements
 [ubuntu kylin 14.04/16.04 lts](http://www.ubuntukylin.com/downloads/)
 
+[redis desktop manager](https://github.com/uglide/RedisDesktopManager/releases)
+
 ## Ubuntu setup
 ```
-sudo apt-get install autoconf libreadline-dev git gitg
+sudo apt-get install autoconf libtool libreadline-dev git gitg
 ```
 
 ## Building from source

@@ -16,15 +16,17 @@ CFLAGS = -g -O2 -Wall -I$(BUILD_INCLUDE_DIR)
 LDFLAGS= -L$(BUILD_CLIB_DIR) -Wl,-rpath $(BUILD_CLIB_DIR) -lpthread -lm -ldl -lrt
 DEFS = -DHAS_SOCKLEN_T=1 -DLUA_COMPAT_APIINTCASTS=1 
 
-all : submodule build lua53 Penlight levent spb libenet.so libev.so http_parser.so
+all : submodule build lua53 Penlight levent spb libenet.so libev.so libuv.so http_parser.so
 
 build:
 	-mkdir $(BUILD_DIR)
 	-mkdir $(BUILD_BIN_DIR)
 	-mkdir $(BUILD_INCLUDE_DIR)
 	-mkdir $(BUILD_INCLUDE_DIR)/libev/
+	-mkdir $(BUILD_INCLUDE_DIR)/libuv/
 	-mkdir $(BUILD_LUALIB_DIR)
 	-mkdir $(BUILD_LUALIB_DIR)/pl/
+	-mkdir $(BUILD_LUALIB_DIR)/luv/
 	-mkdir $(BUILD_LUALIB_DIR)/levent/
 	-mkdir $(BUILD_LUACLIB_DIR)
 	-mkdir $(BUILD_LUACLIB_DIR)/levent/
@@ -62,6 +64,11 @@ libev.so :
 	cp 3rd/libev/lib/libev.a $(BUILD_CLIB_DIR)/
 	cp 3rd/libev/*.h 3rd/libev/*.c $(BUILD_INCLUDE_DIR)/libev
 
+libuv.so :
+	cd 3rd/libuv/ && ./autogen.sh && ./configure --prefix=$(PWD)/3rd/libuv/build/ && make && make install
+	cp 3rd/libuv/build/lib/libuv.* $(BUILD_CLIB_DIR)/
+	cp 3rd/libuv/build/include/*.h $(BUILD_INCLUDE_DIR)/libuv
+
 http_parser.so : 3rd/levent/deps/http-parser/http_parser.c
 	cp 3rd/levent/deps/http-parser/http_parser.h $(BUILD_INCLUDE_DIR)
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $(BUILD_CLIB_DIR)/libhttp_parser.so
@@ -69,7 +76,7 @@ http_parser.so : 3rd/levent/deps/http-parser/http_parser.c
 submodule :
 	git submodule update --init
 	
-LUACLIB = sproto lpeg log enet lfs cjson ctime ltimer
+LUACLIB = sproto lpeg log enet lfs cjson ctime luv
 LEVENTLIB = levent bson mongo
 
 all : \
@@ -109,10 +116,10 @@ $(BUILD_LUACLIB_DIR)/cjson.so: 3rd/lua-cjson/lua_cjson.c 3rd/lua-cjson/fpconv.c 
 $(BUILD_LUACLIB_DIR)/ctime.so: lualib-src/lua-ctime.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
 
-$(BUILD_LUACLIB_DIR)/ltimer.so: lualib-src/lua-timer.c 3rd/timer/timer.c \
-	    3rd/timer/rbtree.c | $(BUILD_LUACLIB_DIR)
-	cp 3rd/timer/timer.h $(BUILD_INCLUDE_DIR)/
-	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
+$(BUILD_LUACLIB_DIR)/luv.so: 3rd/luv/src/luv.c | $(BUILD_LUACLIB_DIR)
+	cp -r 3rd/luv/lib/*.lua $(BUILD_LUALIB_DIR)/luv/
+	cp -r 3rd/luv/src/*.h 3rd/luv/src/*.c $(BUILD_INCLUDE_DIR)/libuv
+	$(CC) $(CFLAGS) -I$(BUILD_INCLUDE_DIR)/libuv $(SHARED) $^ -o $@ $(LDFLAGS) -luv
 
 $(BUILD_LUACLIB_DIR)/levent/levent.so : 3rd/levent/src/lua-levent.c 3rd/levent/src/lua-errno.c \
 	3rd/levent/src/lua-ev.c 3rd/levent/src/lua-socket.c 3rd/levent/src/lua-http-parser.c \
@@ -142,5 +149,9 @@ schema:
 	-o $(TOP)/$(BUILD_SPROTO_DIR)/s2c.spb
 
 clean :
+	-rm -rf build
+	-rm -rf log
+
+cleanall :
 	-rm -rf build
 	-rm -rf log

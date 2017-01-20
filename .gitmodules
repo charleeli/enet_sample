@@ -22,3 +22,9 @@
 [submodule "3rd/Penlight"]
 	path = 3rd/Penlight
 	url = https://github.com/stevedonovan/Penlight.git
+[submodule "3rd/libuv"]
+	path = 3rd/libuv
+	url = https://github.com/libuv/libuv.git
+[submodule "3rd/luv"]
+	path = 3rd/luv
+	url = https://github.com/luvit/luv.git
