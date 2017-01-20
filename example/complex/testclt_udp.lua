@@ -15,7 +15,7 @@ local s2c_host = s2c_sp:host(SprotoEnv.BASE_PACKAGE)
 local c2s_client = s2c_host:attach(SprotoLoader.load(SprotoEnv.PID_C2S))
 
 local host = enet.host_create()
-local server = host:connect("localhost:5678")
+local server = host:connect("127.0.0.1:5678")
 
 local session = 0
 
