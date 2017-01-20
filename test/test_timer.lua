@@ -3,20 +3,18 @@ package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
                 ..";./build/lualib/?.lua;./build/lualib/?.lua;./lualib/deps/?.lua"
 
 local uv = require('luv')
-local timer = require('timer')
 
-local elapse = 0
-local interval = timer.setInterval(1000, function ()
-    elapse = elapse + 1000
-    print("on_interval, elapse =", elapse)
+local function set_interval(interval, callback)
+    local timer = uv.new_timer()
+    local function ontimeout()
+        callback(timer)
+    end
+    uv.timer_start(timer, interval, interval, ontimeout)
+    return timer
+end
+
+set_interval(1000, function()
+    print("interval...")
 end)
 
-repeat
-  --print("\ntick.")
-until uv.run('once') == 0
-
-print("done")
-
-uv.walk(uv.close)
 uv.run()
-uv.loop_close()
