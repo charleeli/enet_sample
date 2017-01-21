@@ -71,7 +71,7 @@ http_parser.so : 3rd/levent/deps/http-parser/http_parser.c
 submodule :
 	git submodule update --init
 	
-LUACLIB = sproto lpeg log enet lfs cjson ctime
+LUACLIB = sproto lpeg log lsocket enet lfs cjson ctime
 LEVENTLIB = levent bson mongo
 
 all : \
@@ -97,6 +97,9 @@ $(BUILD_LUACLIB_DIR)/lpeg.so : 3rd/lpeg/lpcap.c 3rd/lpeg/lpcode.c \
 
 $(BUILD_LUACLIB_DIR)/log.so : lualib-src/lua-log.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(CFLAGS) $(SHARED) $^ -o $@ $(LDFLAGS)
+
+$(BUILD_LUACLIB_DIR)/lsocket.so:3rd/lsocket/lsocket.c | $(BUILD_LUACLIB_DIR)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@
 
 $(BUILD_LUACLIB_DIR)/enet.so : lualib-src/lua-enet.c | $(BUILD_LUACLIB_DIR)
 	$(CC) $(DEFS) $(CFLAGS) $(SHARED) $^ -o $@ $(LDFLAGS) -lenet

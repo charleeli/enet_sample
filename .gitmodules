@@ -22,3 +22,6 @@
 [submodule "3rd/Penlight"]
 	path = 3rd/Penlight
 	url = https://github.com/stevedonovan/Penlight.git
+[submodule "3rd/lsocket"]
+	path = 3rd/lsocket
+	url = https://github.com/cloudwu/lsocket.git
