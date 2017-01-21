@@ -30,7 +30,7 @@ local function remove_socket(sock)
     end
 end
 
-local M = {}
+local M = {count = 0}
 
 function M.init(addr, port)
     server, err = ls.bind(addr, port, 10)
@@ -49,7 +49,7 @@ function M.init(addr, port)
     sockets = {server}
 end
 
-function M.handle()
+function M.process()
     local ready = ls.select(sockets,0)
     if not ready then
         return
@@ -75,6 +75,8 @@ function M.handle()
                 print("error: "..err)
             end
         end
+
+         M.count = M.count + 1
     end
 end
 

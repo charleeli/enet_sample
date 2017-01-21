@@ -12,14 +12,14 @@ local c2s_host = env.c2s_host
 local s2c_client = env.s2c_client
 
 local host
-local M = {}
+local M = {count = 0}
 
 function M.init(addr, port)
     host = enet.host_create(addr..':'..port)
     print("enet servlet booted")
 end
 
-function M.handle()
+function M.process()
     local event = host:service(0)
     if event then
         if event.type == "receive" then
@@ -41,6 +41,8 @@ function M.handle()
         else
             log.info("Got event %s,%s", event.type, event.peer)
         end
+
+        M.count = M.count + 1
     end
 end
 

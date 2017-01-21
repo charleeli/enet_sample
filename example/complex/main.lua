@@ -51,9 +51,15 @@ local function main()
     tcp_servlet.init("127.0.0.1", 8858)
     enet_servlet.init("127.0.0.1", 5678)
 
+    local count = 0
     while true do
-        tcp_servlet.handle()
-        enet_servlet.handle()
+        tcp_servlet.process()
+        enet_servlet.process()
+
+        if (tcp_servlet.count + enet_servlet.count) - count >= 10 then
+            count = tcp_servlet.count + enet_servlet.count
+            print('save data to db ...')
+        end
     end
 end
 
