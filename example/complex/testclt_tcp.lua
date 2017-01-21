@@ -1,12 +1,12 @@
 package.cpath = package.cpath..";./build/luaclib/?.so;./build/luaclib/levent/?.so"
-package.path  = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
+package.path  = package.path..";./lualib/?.lua"..";./example/complex/?.lua"
                 ..";./build/lualib/?.lua;./build/lualib/?.lua"
 
 local ls = require "lsocket"
 
 addr = '127.0.0.1'
 
-port = 1337
+port = 8858
 
 client, err = ls.connect(addr, port)
 if not client then

@@ -1,10 +1,11 @@
-package.cpath = "./build/luaclib/?.so;./build/luaclib/levent/?.so"
-package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"..";./build/lualib/?.lua"
+package.cpath = package.cpath..";./build/luaclib/?.so;./build/luaclib/levent/?.so"
+package.path  = package.path..";./lualib/?.lua"..";./example/complex/?.lua"
+                ..";./build/lualib/?.lua;./build/lualib/?.lua"
 
 local pretty = require 'pl.pretty'
 local enet = require "enet"
 local log = require "log"
-log.init{log_basename = "simple_client",service_name = "simple server" }
+log.init{log_basename = "complex_client",service_name = "complex server" }
 
 local SprotoLoader = require "sprotoloader"
 local SprotoEnv = require "sproto_env"
@@ -26,7 +27,7 @@ local function send_request(name, args)
 end
 
 local count = 0
-while count < 100 do
+while count < 1000 do
 	local event = host:service(100)
 	if event then
 		if event.type == "receive" then
@@ -42,7 +43,7 @@ while count < 100 do
 		end
 	end
 
-	if count == 8 then
+	if count % 8 == 0 then
 		log.info("sending message")
 
 		local ok, err = pcall(send_request, "send_private_chat", {uuid=123,msg="hello"})

@@ -1,6 +1,6 @@
 package.cpath = package.cpath..";./build/luaclib/?.so;./build/luaclib/levent/?.so"
-package.path = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
-                ..";./build/lualib/?.lua;./build/lualib/?.lua"
+package.path  = package.path..";./lualib/?.lua"..";./example/simple/?.lua"
+                ..";./build/lualib/?.lua;./build/lualib/?.lua;./test/?.lua"
 
 local levent = require "levent.levent"
 local timer = require 'timer'

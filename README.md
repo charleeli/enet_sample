@@ -18,8 +18,7 @@ make
 ## Test
 ```
 cd srpc
-./build/bin/lua example/simple/server.lua
-./build/bin/lua example/simple/client.lua
-
-./build/bin/lua test/test_timer.lua
+./build/bin/lua example/complex/main.lua
+./build/bin/lua example/complex/testclt_tcp.lua
+./build/bin/lua example/complex/testclt_enet.lua
 ```
