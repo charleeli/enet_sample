@@ -1,8 +1,9 @@
-local class = require 'pl.class'
+local levent = require "levent.levent"
+local class = require "levent.class"
 
-local Timer = class()
+local Timer = class("Timer")
 
-function Timer:_init(levent, check_interval)
+function Timer:_init(check_interval)
     self.check_interval = check_interval or 1
     self.running = false
     self.timestamp = 0
@@ -10,7 +11,6 @@ function Timer:_init(levent, check_interval)
     self.to_deleted = {}
     self.pending = {}
     self.timers = {}
-    self.levent = levent
 end
 
 function Timer:add_timer(interval, func, immediate, times)
@@ -22,14 +22,9 @@ function Timer:add_timer(interval, func, immediate, times)
         func = func, 
         wakeup = immediate and 0 or interval,
         times = times or 0,
-        timestamp = self.levent.now()
+        timestamp = levent.now()
     }
     return handle
-end
-
-function Timer:set_interval(interval, func)
-    self:start()
-    return self:add_timer(interval, func)
 end
 
 function Timer:remove_timer(handle)
@@ -43,7 +38,7 @@ function Timer:update()
     for k,_ in pairs(self.to_deleted) do
         self.timers[k] = nil
     end
-    local second = self.levent.now()
+    local second = levent.now()
     for k,v in pairs(self.timers) do
         local interval = second - v.timestamp
         if v.wakeup <= interval then
@@ -68,11 +63,11 @@ function Timer:start()
         return
     end
     self.running = true
-    self.timestamp = self.levent.now()
-    self.levent.spawn(function ()
+    self.timestamp = levent.now()
+    levent.spawn(function ()
         while self.running do
             self:update()
-            self.levent.sleep(self.check_interval)
+            levent.sleep(self.check_interval)
         end
     end)
     return
@@ -82,4 +77,15 @@ function Timer:stop()
     self.running = false
 end
 
-return Timer
+function Timer:set_interval(interval, func)
+    self:start()
+    return self:add_timer(interval, func)
+end
+
+function Timer:clear_interval(handle)
+    self.to_deleted[handle] = true
+end
+
+local M = {}
+M.Timer = Timer.new
+return M

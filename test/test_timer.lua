@@ -9,11 +9,19 @@ log.init{log_basename = "test_timer",service_name = "test timer" }
 
 local data = 'xxx'
 
-local t = timer(levent, 1)
+local t = timer.Timer()
 
-t:set_interval(3, function()
-    print('set_interval',levent.now())
+t:set_interval(2, function()
+    print('set_interval 2',levent.now())
 end)
+
+function test_timer()
+    local t1 = timer.Timer(1)
+
+    t1:set_interval(1, function()
+        print('set_interval 1',levent.now())
+    end)
+end
 
 function read_data(sec)
     while true do
@@ -31,6 +39,7 @@ function write_data(sec)
 end
 
 function main()
+    levent.spawn(test_timer)
     levent.spawn(read_data, 2)
     levent.spawn(write_data, 3)
 
