@@ -64,9 +64,14 @@ function M.process()
             i = socketinfo[s]
             local str, err = s:recv()
             if str ~= nil then
-                str = string.gsub(str, "\n$", "")
-                print("from "..i.." got '"..str.."', answering...")
-                s:send("You sent: "..str.."\n")
+                local type, name, request, response = c2s_host:dispatch(str)
+                print(type, name, request, response)
+                if not request_handlers[name] then
+                    log.error('request_handler %s not exist or not loaded',name)
+                end
+
+                local r = request_handlers[name](request)
+                s:send(response(r))
             elseif err == nil then
                 print("client "..i.." disconnected")
                 s:close()

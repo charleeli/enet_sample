@@ -10,15 +10,17 @@ sudo apt-get install autoconf libtool libreadline-dev git gitg
 
 ## Building from source
 ```
-git clone https://github.com/charleeli/srpc.git
-cd srpc
+git clone https://github.com/charleeli/quick-aux.git
+cd quick-aux
 make
 ```
 
 ## Test
 ```
-cd srpc
+cd quick-aux
 ./build/bin/lua example/complex/main.lua
-./build/bin/lua example/complex/testclt_tcp.lua
 ./build/bin/lua example/complex/testclt_enet.lua
+
+./build/bin/lua example/complex/testclt_tcp.lua
+enter: send_private_chat {uuid=123,msg="hello"}
 ```
