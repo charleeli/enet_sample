@@ -10,14 +10,14 @@ sudo apt-get install autoconf libtool libreadline-dev git gitg
 
 ## Building from source
 ```
-git clone https://github.com/charleeli/quick-aux.git
-cd quick-aux
+git clone https://github.com/charleeli/enet_sample.git
+cd enet_sample
 make
 ```
 
 ## Test
 ```
-cd quick-aux
+cd enet_sample
 ./build/bin/lua example/complex/main.lua
 ./build/bin/lua example/complex/testclt_enet.lua
 
